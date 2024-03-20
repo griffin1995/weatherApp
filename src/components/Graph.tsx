@@ -20,6 +20,21 @@ interface GraphProps {
   data: WeatherResponse; // Expects data of type WeatherResponse
 }
 
+//Creating custom tooltip
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    // Tooltip: time & temperature
+    const temp = Math.round(payload[0].payload.main.temp);
+    return (
+      <div className="customtooltip">
+        {`${label}  ${temp}°C`}
+      </div>
+    );
+  }
+
+  return null;
+};
+
 // Graph component for visualizing weather data
 const Graph = ({ data }: GraphProps) => {
   return (
@@ -52,7 +67,7 @@ const Graph = ({ data }: GraphProps) => {
           {/* YAxis component to display temperature values on the chart */}
           <YAxis stroke="white" strokeWidth={2} type="number" />
           {/* Tooltip component to show detailed information on hover */}
-          <Tooltip />
+          <Tooltip content={<CustomTooltip/>} />
           {/* Bar component to display temperature data as bars in the chart */}
           <Bar barSize={15} dataKey="main.temp" fill="white" />
         </BarChart>
