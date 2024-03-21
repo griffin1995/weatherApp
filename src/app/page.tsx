@@ -10,6 +10,7 @@ import {
   WindIcon,
 } from "lucide-react";
 
+
 export default async function Home() {
   const LOCATION = "London";
   const resp = await fetch(apiUrlForecast(LOCATION), { cache: "no-cache" });

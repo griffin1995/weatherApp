@@ -1,0 +1,144 @@
+
+
+/* Global styles resetting margin, padding, and box-sizing for consistency across elements */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+/*******styles for map page******/
+
+html,
+/* Body styles for background, font, and text color */
+body {
+    height: 100%;
+    color: #fff; /* White text for contrast */
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.container {
+  height: 100vh;
+  width: 100%;
+  margin-left: -10%;
+  margin-top: -30%;
+  
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: rgba(146, 107, 35, 0.8);
+  height: 30%;
+  width: 100%;
+  z-index: 0;
+}
+
+.controls h1 {
+  font-size: 30px;
+  font-weight: bold;
+  color: rgb(241, 203, 144);
+}
+.search {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 2%;
+  margin-top: 25%;
+  margin-left: 17%;
+  padding: 8px;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  z-index: 20;
+}
+
+.search input[type="text"] {
+  flex-grow: 1;
+  margin-right: 10px;
+  width: 95%;
+  padding: 4px;
+  border: none;
+  border-radius: 4px;
+  background-color: #f2f2f2;
+  color: #000;
+  
+}
+.button {
+  margin-bottom: 5%;
+  margin-top: 2%;
+}
+
+.search button{
+  margin-right: 10px;
+  padding: 5px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: rgb(241, 203, 144);
+  color: black;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100vw;
+  max-width: 600px;
+  margin-top: 5%;
+  height: fit-content;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 40px;
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 1;
+}
+.wdata {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 3%;
+  padding: 8px;
+}
+.info p {
+  color: rgb(2, 1, 1);
+  font-size: 12px;
+}
+.wdata p {
+    z-index: 5;
+    color:black; 
+}
+.highlight {
+  color: red;
+}
+.distance p{
+z-index: 5;
+ color:black;
+  margin-left: 15%;
+}
