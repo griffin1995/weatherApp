@@ -14,8 +14,8 @@ import "./styling.css";
 type MapOptions = google.maps.MapOptions;
   
 // API key for OpenWeatherMap API
-const apiKey = "65ad34ef51cc68f1567d459fc99efa63";
-const GOOGLE_MAPS_API_KEY =  "AAIzaSyDnZ8SJitBCPcKeBN6tH1jT9Og_N1TnHXs";
+const apiKey = "";
+const GOOGLE_MAPS_API_KEY =  "";
 const mapContainerStyle = {
   width: "125%",
   height: "600px",
@@ -45,7 +45,7 @@ function Intro() {
 
 
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "AIzaSyDnZ8SJitBCPcKeBN6tH1jT9Og_N1TnHXs", // Replace with your Google Maps API key
+    googleMapsApiKey: GOOGLE_MAPS_API_KEY, // Replace with your Google Maps API key
     libraries: ["places"],
   });
 
@@ -84,7 +84,7 @@ function Intro() {
 // Fetch weather data for origin
 if (isLoaded && origin) {
   // Use Geocoding API to get latitude and longitude for the origin
-  fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${origin}&key=AIzaSyDnZ8SJitBCPcKeBN6tH1jT9Og_N1TnHXs`)
+  fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${origin}&key=GOOGLE_MAPS_API_KEY`)
     .then((response) => response.json())
     .then((data) => {
       const { lat, lng } = data.results[0].geometry.location;
@@ -99,7 +99,7 @@ if (isLoaded && origin) {
 // Fetch weather data for destination
 if (isLoaded && destination) {
   // Use Geocoding API to get latitude and longitude for the destination
-  fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${destination}&key=AIzaSyDnZ8SJitBCPcKeBN6tH1jT9Og_N1TnHXs`)
+  fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${destination}&key=GOOGLE_MAPS_API_KEY`)
     .then((response) => response.json())
     .then((data) => {
       const { lat, lng } = data.results[0].geometry.location;
