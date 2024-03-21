@@ -8,8 +8,8 @@ import {
   DirectionsRenderer,
   Autocomplete as GoogleMapsAutocomplete,
 } from "@react-google-maps/api";
-import { apiUrl, apiUrlForecast } from "@/lib/constants";
-import { WeatherData, WeatherResponse } from "@/lib/types";
+import { getWeather, getForecast } from "@/lib/constants";
+import { WeatherResponse, ForecastResponse } from "@/lib/types";
 
 type MapOptions = google.maps.MapOptions;
 
@@ -32,11 +32,11 @@ async function Intro() {
   const [currentLocation, setCurrentLocation] = useState<google.maps.LatLng | null>(null);
 
   const LOCATION = "London";
-  const resp = await fetch(apiUrlForecast(LOCATION), { cache: "no-cache" });
-  const forecasts = (await resp.json()) as WeatherResponse;
+  const resp = await fetch(getForecast(LOCATION), { cache: "no-cache" });
+  const forecasts = (await resp.json()) as ForecastResponse;
 
   const resp2 = await fetch(apiUrl("London"), { cache: "no-cache" });
-  const weatherdata = (await resp2.json()) as WeatherData;
+  const WeatherResponse = (await resp2.json()) as WeatherResponse;
 
 
   const { isLoaded, loadError } = useLoadScript({
@@ -159,12 +159,12 @@ async function Intro() {
             onCloseClick={() => setOpen(false)}
           >
             <p>Your current location is </p>
-            <p>Temperature: {parseFloat((weatherdata.main.temp - 273).toFixed(0))} K</p>
+            <p>Temperature: {parseFloat((WeatherResponse.main.temp - 273).toFixed(0))} K</p>
             {/* Display weather data */}
-            {weatherdata && (
+            {WeatherResponse && (
               <>
-                <p>Temperature: {parseFloat((weatherdata.main.temp - 273).toFixed(0))} K</p>
-                <p>Weather: {weatherdata.weather[0].description}</p>
+                <p>Temperature: {parseFloat((WeatherResponse.main.temp - 273).toFixed(0))} K</p>
+                <p>Weather: {WeatherResponse.weather[0].description}</p>
               </>
             )}
           </InfoWindow>
