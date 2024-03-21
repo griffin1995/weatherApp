@@ -124,7 +124,7 @@ const angle = 0
               <h1 className="text-xl font-bold">{weatherData.wind.deg}°</h1>
             </div>
           ) : (
-            <div></div>
+            <div>there's nothing here</div>
           )}
         </div>
       </div>
