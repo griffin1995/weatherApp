@@ -61,12 +61,12 @@ a {
   width: 100%;
   max-width: 600px;
   margin-bottom: 2%;
-  margin-top: 25%;
-  margin-left: 17%;
+  margin-top: 35%;
+  margin-left: 20%;
   padding: 8px;
   border: 1px solid lightgray;
   border-radius: 4px;
-  z-index: 20;
+  
 }
 
 .search input[type="text"] {
@@ -114,7 +114,6 @@ a {
   padding: 40px;
   box-sizing: border-box;
   background-color: rgba(255, 255, 255, 0.8);
-  z-index: 1;
 }
 .wdata {
   display: flex;
@@ -131,14 +130,14 @@ a {
   font-size: 12px;
 }
 .wdata p {
-    z-index: 5;
+   
     color:black; 
 }
 .highlight {
   color: red;
 }
 .distance p{
-z-index: 5;
+
  color:black;
   margin-left: 15%;
 }

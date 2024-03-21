@@ -21,7 +21,7 @@ const Navbar = () => {
         {/* Trigger for opening the Sheet, styled with text color and pointer cursor on hover */}
         <SheetTrigger className=" text-white hover:cursor-pointer">
           {/* Menu icon to indicate navigational functionality */}
-          <MenuIcon size={35} style={{ zIndex: 100}} />
+          <MenuIcon size={35} />
         </SheetTrigger>
         {/* Content of the Sheet, specifying its appearance from the left side */}
         <SheetContent side={"left"}>

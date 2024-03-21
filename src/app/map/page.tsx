@@ -15,7 +15,7 @@ type MapOptions = google.maps.MapOptions;
   
 // API key for OpenWeatherMap API
 const apiKey = "65ad34ef51cc68f1567d459fc99efa63";
-const GOOGLE_MAPS_API_KEY =  "AIzaSyDnZ8SJitBCPcKeBN6tH1jT9Og_N1TnHXs";
+const GOOGLE_MAPS_API_KEY =  "AAIzaSyDnZ8SJitBCPcKeBN6tH1jT9Og_N1TnHXs";
 const mapContainerStyle = {
   width: "125%",
   height: "600px",
@@ -39,8 +39,13 @@ function Intro() {
   const [weatherDataDestination, setWeatherDataDestination] = useState(null);
   const [infoVisible, setInfoVisible] = useState(false);
 
+  const handleLoad = (autocomplete: google.maps.places.Autocomplete) => {
+    autocomplete.setFields(["address", "establishment", "administrative_area_level_1"]);
+  };
+
+
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: GOOGLE_MAPS_API_KEY, // Replace with your Google Maps API key
+    googleMapsApiKey: "AIzaSyDnZ8SJitBCPcKeBN6tH1jT9Og_N1TnHXs", // Replace with your Google Maps API key
     libraries: ["places"],
   });
 
@@ -49,6 +54,7 @@ function Intro() {
       mapId: "cf759b347450a970",
       // Disable map and satellite options
       mapTypeControl: false, 
+      
       
     }),
     []
@@ -78,7 +84,7 @@ function Intro() {
 // Fetch weather data for origin
 if (isLoaded && origin) {
   // Use Geocoding API to get latitude and longitude for the origin
-  fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${origin}&key=GOOGLE_MAPS_API_KEY`)
+  fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${origin}&key=AIzaSyDnZ8SJitBCPcKeBN6tH1jT9Og_N1TnHXs`)
     .then((response) => response.json())
     .then((data) => {
       const { lat, lng } = data.results[0].geometry.location;
@@ -93,7 +99,7 @@ if (isLoaded && origin) {
 // Fetch weather data for destination
 if (isLoaded && destination) {
   // Use Geocoding API to get latitude and longitude for the destination
-  fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${destination}&key=GOOGLE_MAPS_API_KEY`)
+  fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${destination}&key=AIzaSyDnZ8SJitBCPcKeBN6tH1jT9Og_N1TnHXs`)
     .then((response) => response.json())
     .then((data) => {
       const { lat, lng } = data.results[0].geometry.location;
@@ -137,22 +143,22 @@ if (isLoaded && destination) {
   return (
     <div className="container">
       <div className="search">
-        <GoogleMapsAutocomplete>
-          <input
-            type="text"
-            placeholder="Origin"
-            value={origin}
-            onChange={(e) => setOrigin(e.target.value)}
-          />
-        </GoogleMapsAutocomplete>
-        <GoogleMapsAutocomplete>
-          <input
-            type="text"
-            placeholder="Destination"
-            value={destination}
-            onChange={(e) => setDestination(e.target.value)}
-          />
-        </GoogleMapsAutocomplete>
+      <GoogleMapsAutocomplete onLoad={(autocomplete) => handleLoad(autocomplete)}>
+        <input
+          type="text"
+          placeholder="Origin"
+          value={origin}
+          onChange={(e) => setOrigin(e.target.value)}
+        />
+      </GoogleMapsAutocomplete>
+      <GoogleMapsAutocomplete onLoad={(autocomplete) => handleLoad(autocomplete)}>
+        <input
+          type="text"
+          placeholder="Destination"
+          value={destination}
+          onChange={(e) => setDestination(e.target.value)}
+        />
+      </GoogleMapsAutocomplete>
         <button
           id="clear"
           onClick={() => {
@@ -168,7 +174,7 @@ if (isLoaded && destination) {
       
         <div className="info" style={{ display: infoVisible ? "block" : "none" }}>
         <h1>Route</h1>
-          <div className="distance">
+          <div className="wdata">
       {weatherDataOrigin && weatherDataOrigin.main && (
           <div>
             <p>Origin Weather:</p>
