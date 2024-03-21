@@ -14,8 +14,8 @@ import "./styling.css";
 type MapOptions = google.maps.MapOptions;
   
 // API key for OpenWeatherMap API
-const apiKey = "65ad34ef51cc68f1567d459fc99efa63";
-const GOOGLE_MAPS_API_KEY =  "AIzaSyDnZ8SJitBCPcKeBN6tH1jT9Og_N1TnHXs";
+const apiKey = "";
+const GOOGLE_MAPS_API_KEY =  "";
 const mapContainerStyle = {
   width: "125%",
   height: "600px",
