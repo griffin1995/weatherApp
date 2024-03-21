@@ -8,11 +8,11 @@ export const NAV_URLS = [
         href: "/london"
     },
     {
-        title: "Map",
-        href: "/map",
+        title: "Journey History",
+        href: "/journey-history",
     },
     {
         title: "Plan a route",
-        href: "/plan"
+        href: "/map"
     },
 ]

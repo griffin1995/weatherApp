@@ -2,6 +2,7 @@ import ForecastGraph from '@/components/ForecastGraph'
 import InfoIcon from '@/components/InfoIcon'
 import Navbar from '@/components/Navbar'
 import { getForecast, getWeather } from '@/lib/constants'
+import { ForecastResponse, WeatherResponse } from '@/lib/types'
 import Image from 'next/image'
 import React from 'react'
 

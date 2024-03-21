@@ -35,7 +35,7 @@ async function Intro() {
   const resp = await fetch(getForecast(LOCATION), { cache: "no-cache" });
   const forecasts = (await resp.json()) as ForecastResponse;
 
-  const resp2 = await fetch(apiUrl("London"), { cache: "no-cache" });
+  const resp2 = await fetch(getWeather("London"), { cache: "no-cache" });
   const WeatherResponse = (await resp2.json()) as WeatherResponse;
 
 
