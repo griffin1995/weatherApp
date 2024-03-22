@@ -260,6 +260,12 @@ if (isLoaded && destination) {
           >
           <div style={{ backgroundColor: 'white', padding: '10px', borderRadius: '5px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)', color: 'black'}}>
             <p>Your current location</p>
+            {currentLocation && (
+            <div>
+              <p>Latitude: {currentLocation.lat().toFixed(1)}</p>
+              <p>Longitude: {currentLocation.lng().toFixed(1)}</p>
+            </div>
+            )}
             {weatherData && weatherData.main &&(
             <div>
               <p>Temperature: {weatherData.main.temp}°C</p>
