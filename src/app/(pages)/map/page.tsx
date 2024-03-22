@@ -15,8 +15,8 @@ import "./styling.css";
 type MapOptions = google.maps.MapOptions;
   
 // API key for OpenWeatherMap API
-const apiKey = "65ad34ef51cc68f1567d459fc99efa63";
-const GOOGLE_MAPS_API_KEY =  "AIzaSyDnZ8SJitBCPcKeBN6tH1jT9Og_N1TnHXs";
+const apiKey = "";
+const GOOGLE_MAPS_API_KEY =  "";
 const mapContainerStyle = {
   width: "125%",
   height: "600px",
@@ -95,28 +95,27 @@ function Intro() {
  
 // Fetch weather data for origin
 if (isLoaded && origin) {
-  // Use Geocoding API to get latitude and longitude for the origin
-  fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${origin}&key=GOOGLE_MAPS_API_KEY`)
+  fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(origin)}&key=${GOOGLE_MAPS_API_KEY}`)
     .then((response) => response.json())
     .then((data) => {
       const { lat, lng } = data.results[0].geometry.location;
       // Fetch weather data using latitude and longitude
-      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=apiKey`)
+      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${apiKey}`)
         .then((response) => response.json())
         .then((weatherData) => setWeatherDataOrigin(weatherData))
         .catch((error) => console.error("Error fetching weather data for origin:", error));
     })
     .catch((error) => console.error("Error fetching coordinates for origin:", error));
 }
+
 // Fetch weather data for destination
 if (isLoaded && destination) {
-  // Use Geocoding API to get latitude and longitude for the destination
-  fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${destination}&key=GOOGLE_MAPS_API_KEY`)
+  fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(destination)}&key=${GOOGLE_MAPS_API_KEY}`)
     .then((response) => response.json())
     .then((data) => {
       const { lat, lng } = data.results[0].geometry.location;
       // Fetch weather data using latitude and longitude
-      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=apiKey`)
+      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${apiKey}`)
         .then((response) => response.json())
         .then((weatherData) => setWeatherDataDestination(weatherData))
         .catch((error) => console.error("Error fetching weather data for destination:", error));
