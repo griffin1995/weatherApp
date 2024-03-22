@@ -186,6 +186,7 @@ const AutocompleteSearchBar = () => {
 
     const directionsService = new window.google.maps.DirectionsService();
 
+    // setting up the route using googles direction service
     directionsService.route(
       {
         origin: new window.google.maps.LatLng(origin.lat, origin.lng),
@@ -235,9 +236,9 @@ const AutocompleteSearchBar = () => {
           <>
           <div className="flex flex-col text-sm border-2 p-3 rounded-lg overflow-hidden">
             <h1>Distance: {(google.maps.geometry.spherical.computeDistanceBetween(origin, dest) / 1000).toPrecision(3)}Km</h1>
-            <h1>Journey Time: </h1>
+
           </div>
-          
+          {/* minus 273 to convert to celcius */}
             <div className="flex flex-col border-2 p-3 rounded-lg">
               <h1>Origin Temperature: {(originInfo.main.temp - 273).toPrecision(2)}°</h1>
               <h1>Origin wind speed: {originInfo.wind.speed}</h1>
