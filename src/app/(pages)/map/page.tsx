@@ -183,7 +183,7 @@ const AutocompleteSearchBar = () => {
   const handleShowDirections = () => {
     // standard code for showing directions using googles react api
     if (!origin || !dest) return;
-
+    
     const directionsService = new window.google.maps.DirectionsService();
 
     // setting up the route using googles direction service
