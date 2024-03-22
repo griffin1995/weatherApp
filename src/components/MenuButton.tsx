@@ -2,13 +2,13 @@
 
 import React, { useEffect, useState } from 'react'
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
+import { NAV_URLS } from '@/lib/constants'
 import { MenuIcon } from 'lucide-react'
 import path from 'path'
 import { Button, buttonVariants } from './ui/button'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/utils/supabase/client'
-import { NAV_URLS } from '@/lib/constants'
 
 const MenuButton = () => {
   const path = usePathname()
@@ -46,11 +46,7 @@ const MenuButton = () => {
             
           }} >Logout</Button>}
 
-          {user && 
-          <>
-          <h1 className='font-bold'>Logged in as:</h1>
-          <p>{user}</p>
-          </>}
+          <h1>{user}</h1>
         </div>
       </SheetContent>
     </Sheet>

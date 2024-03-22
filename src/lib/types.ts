@@ -39,7 +39,7 @@ interface Sys {
     sunset: number;
 }
 
-export interface WeatherResponse {
+interface WeatherResponse {
     coord: Coord;
     weather: Weather[];
     base: string;
@@ -72,7 +72,7 @@ interface ForecastListItem {
     dt_txt: string;
 }
 
-export interface ForecastResponse {
+interface ForecastResponse {
     cod: string;
     message: number;
     cnt: number;

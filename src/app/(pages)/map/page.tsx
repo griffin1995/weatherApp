@@ -1,285 +1,231 @@
-"use client";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import {
-  GoogleMap,
-  useLoadScript,
-  Marker,
-  InfoWindow,
-  DirectionsRenderer,
-  Autocomplete as GoogleMapsAutocomplete,
-} from "@react-google-maps/api";
-import Distance from "./distance";
-import "./styling.css";
+"use client"
 
+import React, { useState, useRef, useEffect } from "react";
+import { GoogleMap, useLoadScript, Marker, DirectionsRenderer } from "@react-google-maps/api";
+import usePlacesAutocomplete, {
+  getGeocode,
+  getLatLng,
+} from "use-places-autocomplete";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast";
+import { getWeather } from "@/lib/constants";
+import { fetchWeatherByLngLat } from "@/app/fetch/fetchWeather";
+import { createClient } from "@/utils/supabase/client";
+import { Database } from "@/utils/supabase-types";
+import { revalidatePath } from "next/cache";
 
-type MapOptions = google.maps.MapOptions;
-  
-// API key for OpenWeatherMap API
-const apiKey = "";
-const GOOGLE_MAPS_API_KEY =  "";
-const mapContainerStyle = {
-  width: "125%",
-  height: "600px",
-  zIndex: 1, 
+const mapContainerStyle: React.CSSProperties = {
+  width: "100%",
+  height: "400px",
 };
 
-//centers the map when loaded
 const center = {
-  lat: 51.5072,
-  lng: 0.1276,
+  lat: 51.509865,
+  lng: -0.118092,
 };
 
-function Intro() {
-  const [origin, setOrigin] = useState("");
-  const [destination, setDestination] = useState("");
-  const [directions, setDirections] = useState<google.maps.DirectionsResult | undefined>(undefined);
-  const [open, setOpen] = useState(false);
-  const [currentLocation, setCurrentLocation] = useState<google.maps.LatLng | null>(null);
-  const [weatherData, setWeatherData] = useState(null);
-  const [weatherDataOrigin, setWeatherDataOrigin] = useState(null);
-  const [weatherDataDestination, setWeatherDataDestination] = useState(null);
-  const [infoVisible, setInfoVisible] = useState(false);
-  const autocompleteOrigin = useRef<google.maps.places.Autocomplete | null>(null);
-  const autocompleteDestination = useRef<google.maps.places.Autocomplete | null>(null);
 
-
-  const handleLoad = (autocomplete: google.maps.places.Autocomplete) => {
-    autocomplete.setFields(["address", "establishment", "administrative_area_level_1"]);
-  };
-
-
+const libraries = ["places"]
+const AutocompleteSearchBar = () => {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: GOOGLE_MAPS_API_KEY, // Replace with your Google Maps API key
-    libraries: ["places"],
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY! as string,
+    libraries: libraries as any,
   });
 
-  const options = useMemo<MapOptions>(
-    () => ({
-      mapId: "cf759b347450a970",
-      // Disable map and satellite options
-      mapTypeControl: false, 
-      
-      
-    }),
-    []
+  const [originInfo, setOriginInfo] = useState<WeatherResponse | null>(null)
+  const [destInfo, setDestInfo] = useState<WeatherResponse | null>(null)
+  const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
+
+  const { toast } = useToast()
+
+  const client = createClient()
+
+  const [origin, setOrigin] = useState<google.maps.LatLngLiteral | null>(null);
+  const [dest, setDest] = useState<google.maps.LatLngLiteral | null>(null);
+  const originAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(
+    null
   );
-  
-  const handleLoadOrigin = (autocomplete: google.maps.places.Autocomplete) => {
-    autocompleteOrigin.current = autocomplete;
-    handleLoad(autocomplete);
-  };
-  
-  const handleLoadDestination = (autocomplete: google.maps.places.Autocomplete) => {
-    autocompleteDestination.current = autocomplete;
-    handleLoad(autocomplete);
-  };
+  const destAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(
+    null
+  );
 
   useEffect(() => {
-    if (origin && destination) {
-      setInfoVisible(true);
-      const directionsService = new google.maps.DirectionsService();
-      directionsService.route(
+    if (isLoaded) {
+      originAutocompleteRef.current = new window.google.maps.places.Autocomplete(
+        document.getElementById("origin-input") as HTMLInputElement,
         {
-          origin: origin,
-          destination: destination,
-          travelMode: google.maps.TravelMode.BICYCLING,
-        },
-        (result, status) => {
-          if (status === "OK" && result) {
-            setDirections(result);
-          }
+          types: ["geocode"],
+          componentRestrictions: { country: "uk" }, // Change to your desired country code
         }
       );
-      
-    }
- 
-// Fetch weather data for origin
-if (isLoaded && origin) {
-  fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(origin)}&key=${GOOGLE_MAPS_API_KEY}`)
-    .then((response) => response.json())
-    .then((data) => {
-      const { lat, lng } = data.results[0].geometry.location;
-      // Fetch weather data using latitude and longitude
-      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${apiKey}`)
-        .then((response) => response.json())
-        .then((weatherData) => setWeatherDataOrigin(weatherData))
-        .catch((error) => console.error("Error fetching weather data for origin:", error));
-    })
-    .catch((error) => console.error("Error fetching coordinates for origin:", error));
-}
+      originAutocompleteRef.current.addListener(
+        "place_changed",
+        handleOriginPlaceChange
+      );
 
-// Fetch weather data for destination
-if (isLoaded && destination) {
-  fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(destination)}&key=${GOOGLE_MAPS_API_KEY}`)
-    .then((response) => response.json())
-    .then((data) => {
-      const { lat, lng } = data.results[0].geometry.location;
-      // Fetch weather data using latitude and longitude
-      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${apiKey}`)
-        .then((response) => response.json())
-        .then((weatherData) => setWeatherDataDestination(weatherData))
-        .catch((error) => console.error("Error fetching weather data for destination:", error));
-    })
-    .catch((error) => console.error("Error fetching coordinates for destination:", error));
-}
-
-  }, [isLoaded, origin, destination]);
-
-  useEffect(() => {
-    if (isLoaded && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setCurrentLocation(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
-        },
-        (error) => {
-          console.log("Error getting location: ", error);
+      destAutocompleteRef.current = new window.google.maps.places.Autocomplete(
+        document.getElementById("dest-input") as HTMLInputElement,
+        {
+          types: ["geocode"],
+          componentRestrictions: { country: "uk" }, // Change to your desired country code
         }
       );
-    } else {
-      console.log("Geolocation not supported");
+      destAutocompleteRef.current.addListener(
+        "place_changed",
+        handleDestPlaceChange
+      );
     }
-  
-    // Fetch current location weather data
-    if (isLoaded && currentLocation) {
-      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${currentLocation.lat()}&lon=${currentLocation.lng()}&appid=${apiKey}`)
-        .then((response) => response.json())
-        .then((data) => setWeatherData(data));
-        
-    }
-  }, [isLoaded, currentLocation]);
+  }, [isLoaded]);
 
-  if (loadError) return <div>Error loading Google Maps API</div>;
+  const handleOriginPlaceChange = async () => {
+    if (!originAutocompleteRef.current) return;
+
+    const place = originAutocompleteRef.current.getPlace();
+    if (!place.geometry) return;
+
+    try {
+      const results = await getGeocode({ address: place.formatted_address });
+      const { lat, lng } = await getLatLng(results[0]);
+      setOrigin({ lat, lng });
+    } catch (error) {
+      console.error("Error selecting origin address:", error);
+    }
+  };
+
+  const handleDestPlaceChange = async () => {
+    if (!destAutocompleteRef.current) return;
+
+    const place = destAutocompleteRef.current.getPlace();
+    if (!place.geometry) return;
+
+    try {
+      const results = await getGeocode({ address: place.formatted_address });
+      const { lat, lng } = await getLatLng(results[0]);
+      setDest({ lat, lng });
+    } catch (error) {
+      console.error("Error selecting destination address:", error);
+    }
+  };
+
+  const saveToDb = async () => {
+    if (destInfo && originInfo) {
+      console.log(destInfo, originInfo)
+      const {error} = await client.from("journeys").insert({
+        origin: originAutocompleteRef?.current?.getPlace().name?.toString() || "unknown",
+        destination: destAutocompleteRef?.current?.getPlace().name?.toString() || "unknown"
+      })
+
+      window.location.reload()
+
+      toast({
+        title: "Saving to account"
+      })
+
+      if (error) {
+        toast({
+          title: "Error saving to account!",
+          variant: "destructive"
+        })
+      }
+    }
+  }
+
+  const handleSubmit = async () => {
+
+    if (origin == null || dest == null) {
+      toast({
+        title: "Enter a valid origin and destination!",
+        variant: "destructive"
+      })
+      return
+    }
+
+    handleShowDirections()
+    fetchWeatherByLngLat(origin.lng, origin.lat)
+      .then(data => setOriginInfo(data as WeatherResponse))
+      .catch((e) => {
+        toast({
+          title: "Enter a valid origin and destination!",
+          description: e.toString(),
+          variant: "destructive"
+        })
+      })
+
+    fetchWeatherByLngLat(dest.lng, dest.lat)
+      .then(data => setDestInfo(data as WeatherResponse))
+      .catch((e) => {
+        toast({
+          title: "Error fetching location information",
+          description: e.toString(),
+          variant: "destructive"
+        })
+      })
+  }
+  const handleShowDirections = () => {
+    if (!origin || !dest) return;
+
+    const directionsService = new window.google.maps.DirectionsService();
+
+    directionsService.route(
+      {
+        origin: new window.google.maps.LatLng(origin.lat, origin.lng),
+        destination: new window.google.maps.LatLng(dest.lat, dest.lng),
+        travelMode: google.maps.TravelMode.DRIVING,
+      },
+      (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          setDirections(result);
+        } else {
+          console.error("Directions request failed due to " + status);
+        }
+      }
+    );
+  };
+
+  if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading...</div>;
 
   return (
-    <div className="container">
-      <div className="search">
-      <GoogleMapsAutocomplete
-  onLoad={(autocomplete) => handleLoadOrigin(autocomplete)}
-  onPlaceChanged={() => {
-    const place = autocompleteOrigin.current?.getPlace();
-    if (place && place.formatted_address) {
-      setOrigin(place.formatted_address!); // Add the non-null assertion operator (!) here
-    }
-  }}
->
-  <input
-    type="text"
-    placeholder="Origin"
-    value={origin}
-    onChange={(e) => setOrigin(e.target.value)}
-  />
-</GoogleMapsAutocomplete>
-<GoogleMapsAutocomplete
- 
-  onLoad={(autocomplete) => handleLoadDestination(autocomplete)}
-  onPlaceChanged={() => {
-    const place = autocompleteDestination.current?.getPlace();
-    if (place && place.formatted_address) {
-      setDestination(place.formatted_address!); // Add the non-null assertion operator (!) here
-    }
-  }}
->
-  <input
-    type="text"
-    placeholder="Destination"
-    value={destination}
-    onChange={(e) => setDestination(e.target.value)}
-  />
-</GoogleMapsAutocomplete>
-        <button
-          id="clear"
-          onClick={() => {
-            setOrigin("");
-            setDestination("");
-            setDirections(undefined);
-          }}
-        >
-          Clear
-        </button>
-      </div>
-      <div className="controls">
-      
-        <div className="info" style={{ display: infoVisible ? "block" : "none" }}>
-        <h1>Route</h1>
-          <div className="wdata">
-      {weatherDataOrigin && weatherDataOrigin.main && (
-          <div>
-            <p>Origin Weather:</p>
-            <p>Temperature: {weatherDataOrigin.main.temp}°C</p>
-            <p>Weather: {weatherDataOrigin.weather[0].description}</p>
-          </div>
-          )}
-          {weatherDataDestination && weatherDataDestination.main &&(
-          <div>
-            <p>Destination Weather:</p>
-            <p>Temperature: {weatherDataDestination.main.temp}°C</p>
-            <p>Weather: {weatherDataDestination.weather[0].description}</p>
-          </div>
-          )}    
-          </div>
-          <div className="distance">
-          {directions && <Distance leg={directions.routes[0].legs[0]} />}
-          </div>
-        </div>
-      </div>
-
+    <div className="flex flex-col gap-y-2 text-black mt-5">
+      <input className="p-3 rounded-lg"
+        type="text"
+        id="origin-input"
+        placeholder="Enter origin location..."
+      />
+      <input
+        className="p-3 rounded-lg"
+        type="text"
+        id="dest-input"
+        placeholder="Enter destination location..."
+      />
+      <button className={cn("h-full", buttonVariants({ variant: "default", size: "lg" }))} onClick={handleSubmit}>Start</button>
+      {originInfo && destInfo && <button className={cn("h-full", buttonVariants({ variant: "default", size: "lg" }))} onClick={saveToDb}>Save Journey</button>}
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
-        zoom={9}
-        center={currentLocation || center}
-        options={options}
+        zoom={origin ? 15 : 13}
+        center={origin || center}
       >
-        {directions && (
-          <DirectionsRenderer
-            directions={directions}
-            options={{
-              polylineOptions: {
-                zIndex: 50,
-                strokeColor: "red",
-                strokeWeight: 5,
-              },
-            }}
-          />
-        )}
-        {isLoaded && (
-          <Marker
-            position={currentLocation || center}
-            icon={{
-              url: "https://img.icons8.com/material/24/FF0000/cycling-track.png",
-              scaledSize: new google.maps.Size(40, 40),
-            }}
-            onClick={() => setOpen(true)}
-          />
-        )}
-
-        {open && (
-          <InfoWindow
-            position={currentLocation || center}
-            onCloseClick={() => setOpen(false)}
-          >
-          <div style={{ backgroundColor: 'white', padding: '10px', borderRadius: '5px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)', color: 'black'}}>
-            <p>Your current location</p>
-            {currentLocation && (
-            <div>
-              <p>Latitude: {currentLocation.lat().toFixed(1)}</p>
-              <p>Longitude: {currentLocation.lng().toFixed(1)}</p>
-            </div>
-            )}
-            {weatherData && weatherData.main &&(
-            <div>
-              <p>Temperature: {weatherData.main.temp}°C</p>
-              <p>Weather: {weatherData.weather[0].description}</p>
-            </div>
-            )}      
-          </div>
-          </InfoWindow>
-        )}
+        {origin && <Marker position={origin} />}
+        {dest && <Marker position={dest} />}
+        {directions && <DirectionsRenderer directions={directions} />}
       </GoogleMap>
+
+      <div className="text-white gap-x-10 flex text-2xl font-bold">
+        {originInfo && destInfo &&
+          <>
+            <div className="flex flex-col">
+              <h1>Origin Temperature: {(originInfo.main.temp - 273).toFixed(2)}</h1>
+              <h1>Origin wind speed: {originInfo.wind.speed}</h1>
+            </div>
+            <div className="flex flex-col">
+              <h1>Destination Temperature: {(destInfo.main.temp - 273).toFixed(2)}</h1>
+              <h1>Destination wind speed: {destInfo.wind.speed}</h1>
+            </div>
+          </>}
+      </div>
     </div>
   );
-}
+};
 
-export default Intro;
-
-
+export default AutocompleteSearchBar;

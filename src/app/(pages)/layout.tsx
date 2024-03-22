@@ -17,10 +17,10 @@ export default function PagesLayout({
         <div className="bg-gray-300 p-5 min-h-screen  max-w-screen-2xl mx-auto">
             <div className="flex gap-x-5 items-center">
             <MenuButton/>
-            <h1 className="text-3xl font-bold text-gray-800">{path.charAt(1).toUpperCase() + path.substring(2)}</h1>
+            <h1 className="text-3xl font-bold text-gray-900">{path.charAt(1).toUpperCase() + path.substring(2)}</h1>
             </div>
             
-                <div className="text-gray-800 min-h-screen w-full">
+                <div className="text-gray-900 min-h-screen w-full">
                     {children}
                 </div>
             <Toaster />

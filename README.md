@@ -1,35 +1,36 @@
-# CycleCast
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Introduction
+## Getting Started
 
-CycleCast is an innovative web application designed for cycling enthusiasts and fitness trackers. Leveraging the latest in React technology, CycleCast offers real-time data visualization, personalized fitness tracking, and an interactive interface to enhance your cycling experience. From dynamic graphs that display your ride statistics to informative cards that summarize your performance, CycleCast is the ultimate companion for both casual riders and serious cyclists.
+First, run the development server:
 
-## Setup and Installation
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-Get CycleCast up and running on your local machine by following these simple steps:
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-1. **Clone the repository:**
-   git clone https://github.com/yourusername/CycleCast.git
-   cd CycleCast
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-2. **Install dependencies:**
-   npm install
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-3. **Start the development server:**
-   npm start
-   This will launch CycleCast in development mode. Navigate to http://localhost:3000 in your browser to start your journey.
+## Learn More
 
-## Features
+To learn more about Next.js, take a look at the following resources:
 
-- **Dynamic Graphs**: Engage with your cycling data through interactive graphs that track your progress over time.
-- **Information Cards**: Quickly access key performance indicators like distance, speed, and calories burned through visually appealing cards.
-- **Interactive Navigation**: Explore CycleCast's features with ease using the intuitive navigation bar.
-- **Efficient Search**: Find your past rides and analyze performance with a powerful search functionality.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-## Contributing
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-Your contributions make CycleCast even better! If you have ideas for new features or spot any bugs, feel free to open an issue or submit a pull request on GitHub.
+## Deploy on Vercel
 
-## License
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-MIT © [2024] [CycleCast]
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

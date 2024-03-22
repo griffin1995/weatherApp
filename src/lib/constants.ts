@@ -2,17 +2,19 @@ export const getWeather = (location: string) => {return `https://api.openweather
 
 export const getForecast = (location: string) => {return `https://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=65ad34ef51cc68f1567d459fc99efa63`}
 
+export const getWeatherByLngLat = (lng: number, lat: number) => {return `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=65ad34ef51cc68f1567d459fc99efa63`}
+
 export const NAV_URLS = [
     {
         title: "Home",
         href: "/london"
     },
     {
-        title: "Journey History",
-        href: "/journey-history",
+        title: "Map",
+        href: "/map",
     },
     {
-        title: "Plan a route",
-        href: "/map"
+        title: "Journey History",
+        href: "/journey-history"
     },
 ]

@@ -2,26 +2,15 @@ import ForecastGraph from '@/components/ForecastGraph'
 import InfoIcon from '@/components/InfoIcon'
 import Navbar from '@/components/Navbar'
 import { getForecast, getWeather } from '@/lib/constants'
-import { ForecastResponse, WeatherResponse } from '@/lib/types'
 import Image from 'next/image'
 import React from 'react'
+import { fetchForecast, fetchWeather } from '../fetch/fetchWeather'
 
-const fetchWeather = async (location: string) => {
-    const res = await fetch(getWeather(location), /* { cache: "no-cache" }*/)
-    if (!res.ok) return undefined
-    return res.json()
-}
 
-const fetchForecast = async (location: string) => {
-    const res = await fetch(getForecast(location),/* { cache: "no-cache" }*/)
-    if (!res.ok) return undefined
-    return res.json()
-}
 
 async function SearchResult({ params }: { params: { location: string } }) {
     const weather = await fetchWeather(params.location || "london") as WeatherResponse
     const forecast = await fetchForecast(params.location || "London") as ForecastResponse
-    // var backgroundImage = "/background/rain.jpg"
     var bg = "blue-200"
 
     const weatherCode = weather == undefined ? -1 : weather.weather[0].id
