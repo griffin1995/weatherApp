@@ -33,8 +33,10 @@ const AutocompleteSearchBar = () => {
     libraries: libraries as any,
   });
 
+  // origininfo and destinfo will contain weather info for origin and destination
   const [originInfo, setOriginInfo] = useState<WeatherResponse | null>(null)
   const [destInfo, setDestInfo] = useState<WeatherResponse | null>(null)
+  
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
 
   const { toast } = useToast()
@@ -43,22 +45,29 @@ const AutocompleteSearchBar = () => {
 
   const [origin, setOrigin] = useState<google.maps.LatLngLiteral | null>(null);
   const [dest, setDest] = useState<google.maps.LatLngLiteral | null>(null);
+  // references the origin autocompletion
   const originAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(
     null
   );
+
+  // references the destination autocompletion
   const destAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(
     null
   );
 
+  // alot of this from documentation
   useEffect(() => {
     if (isLoaded) {
       originAutocompleteRef.current = new window.google.maps.places.Autocomplete(
+        // refers to the input box origin, turns it into a google autcomplete input
         document.getElementById("origin-input") as HTMLInputElement,
         {
           types: ["geocode"],
           componentRestrictions: { country: "uk" }, // Change to your desired country code
         }
       );
+      // when the originautocomplete ref changes (it is linked to the autocomplete which contains the input)
+      // handleOriginPlaceChanfe is called which updates the useState variables
       originAutocompleteRef.current.addListener(
         "place_changed",
         handleOriginPlaceChange
@@ -86,6 +95,7 @@ const AutocompleteSearchBar = () => {
 
     try {
       const results = await getGeocode({ address: place.formatted_address });
+      // retreieves the lat and lng values based on the address
       const { lat, lng } = await getLatLng(results[0]);
       setOrigin({ lat, lng });
     } catch (error) {
@@ -93,6 +103,7 @@ const AutocompleteSearchBar = () => {
     }
   };
 
+  // the same as Origin but for dest
   const handleDestPlaceChange = async () => {
     if (!destAutocompleteRef.current) return;
 
@@ -111,11 +122,16 @@ const AutocompleteSearchBar = () => {
   const saveToDb = async () => {
     if (destInfo && originInfo) {
       console.log(destInfo, originInfo)
+      // uses supabase client to interact with the backend to insert
+      // the DB is configured so userid is automatically ascociated with the user who saves the journey
+      // the user gets an error prompt if theyre not signed in
       const {error} = await client.from("journeys").insert({
+        // retrevies the place names to save
         origin: originAutocompleteRef?.current?.getPlace().name?.toString() || "unknown",
         destination: destAutocompleteRef?.current?.getPlace().name?.toString() || "unknown"
       })
 
+      // window reloaded so the list of saved journeys updates
       window.location.reload()
 
       toast({
@@ -141,6 +157,8 @@ const AutocompleteSearchBar = () => {
       return
     }
 
+    // both function calls below retreivee the weatehr of both the origin and destination
+    // and save it to the states
     handleShowDirections()
     fetchWeatherByLngLat(origin.lng, origin.lat)
       .then(data => setOriginInfo(data as WeatherResponse))
@@ -163,6 +181,7 @@ const AutocompleteSearchBar = () => {
       })
   }
   const handleShowDirections = () => {
+    // standard code for showing directions using googles react api
     if (!origin || !dest) return;
 
     const directionsService = new window.google.maps.DirectionsService();
@@ -211,15 +230,20 @@ const AutocompleteSearchBar = () => {
         {directions && <DirectionsRenderer directions={directions} />}
       </GoogleMap>
 
-      <div className="text-white gap-x-10 flex text-2xl font-bold">
-        {originInfo && destInfo &&
+      <div className="gap-x-10 flex text-center flex-col gap-y-2 justify-between text-lg mt-5 font-bold">
+        {originInfo && destInfo && origin && dest &&
           <>
-            <div className="flex flex-col">
-              <h1>Origin Temperature: {(originInfo.main.temp - 273).toFixed(2)}</h1>
+          <div className="flex flex-col text-sm border-2 p-3 rounded-lg overflow-hidden">
+            <h1>Distance: {(google.maps.geometry.spherical.computeDistanceBetween(origin, dest) / 1000).toPrecision(3)}Km</h1>
+            <h1>Journey Time: </h1>
+          </div>
+          
+            <div className="flex flex-col border-2 p-3 rounded-lg">
+              <h1>Origin Temperature: {(originInfo.main.temp - 273).toPrecision(2)}°</h1>
               <h1>Origin wind speed: {originInfo.wind.speed}</h1>
             </div>
-            <div className="flex flex-col">
-              <h1>Destination Temperature: {(destInfo.main.temp - 273).toFixed(2)}</h1>
+            <div className="flex flex-col border-2 p-3 rounded-lg">
+              <h1>Destination Temperature: {(destInfo.main.temp - 273).toPrecision(2)}°</h1>
               <h1>Destination wind speed: {destInfo.wind.speed}</h1>
             </div>
           </>}

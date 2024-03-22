@@ -9,6 +9,8 @@ import { fetchForecast, fetchWeather } from '../fetch/fetchWeather'
 
 
 async function SearchResult({ params }: { params: { location: string } }) {
+    // server side component so fetches take place directly here
+    // response mapped to the interfaces for type safety
     const weather = await fetchWeather(params.location || "london") as WeatherResponse
     const forecast = await fetchForecast(params.location || "London") as ForecastResponse
     var bg = "blue-200"
@@ -63,6 +65,7 @@ async function SearchResult({ params }: { params: { location: string } }) {
                             <InfoIcon icon='👓' value={(weather.visibility / 1000).toString()} units='km' />
                         </div>
                         <div className=''>
+                            {/* only the first 6 values are important for our use case */}
                             <ForecastGraph forecasts={forecast.list.slice(0, 6)} />
                         </div>
                     </>}

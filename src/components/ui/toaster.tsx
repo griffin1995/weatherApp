@@ -1,5 +1,6 @@
 "use client"
 
+// used to display toasts on screen
 import {
   Toast,
   ToastClose,

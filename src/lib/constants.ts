@@ -4,6 +4,7 @@ export const getForecast = (location: string) => {return `https://api.openweathe
 
 export const getWeatherByLngLat = (lng: number, lat: number) => {return `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=65ad34ef51cc68f1567d459fc99efa63`}
 
+// any updates here are reflected in the navbar, programatically made into navbar links
 export const NAV_URLS = [
     {
         title: "Home",

@@ -14,6 +14,7 @@ const JourneyList = ({journeys}: {journeys: any}) => {
       {
         journeys.data.map((item: { id: any; origin: any; destination: any; created_at: any }) =>
           <JourneyEntry id={item.id} origin={item.origin} 
+          // each entry needs a X button for deletion by id
           dest={item.destination} key={item.id} at={item.created_at} deleteFunc={async () => {await client.from("journeys").delete().eq("id", item.id); router.refresh()}}/>)}</div>
   )
 }

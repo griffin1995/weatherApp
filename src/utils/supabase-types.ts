@@ -1,3 +1,5 @@
+// the structure of the database for type safety (generated using supabase)
+
 export type Json =
   | string
   | number

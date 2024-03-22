@@ -3,6 +3,7 @@
 import React from 'react'
 import { Button } from './ui/button'
 
+// each entry in the journey history page rendered like this
 const JourneyEntry = ({id, origin, dest, at, deleteFunc}: {id: string, origin: string, dest: string, at: string, deleteFunc: any}) => {
     return (
         <div className='justify-between text-xl border p-3 rounded-lg flex'>

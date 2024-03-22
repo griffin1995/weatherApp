@@ -29,6 +29,7 @@ const MenuButton = () => {
       <SheetContent side='left' className=" w-[400px] sm:w-[540px]">
         <div className='gap-y-2 mt-5 flex flex-col text-black text-left'>
           {NAV_URLS.map((url) => <Link className={buttonVariants({ variant: path == url.href ? "default" : "outline" })} key={url.href} href={url.href}>{url.title}</Link>)}
+          {/* if user is not signed in, show sign in and make the onClick call supabase to sign in */}
           {user == undefined && <Button variant="outline" onClick={async () => {
             await supabase.auth.signInWithOAuth({
               provider: "google",
@@ -39,7 +40,7 @@ const MenuButton = () => {
             // router.refresh()
             
           }} >Login with Google</Button>}
-
+        {/* if a user is signed in show the logout */}
         {user !== undefined && <Button variant="outline" onClick={async () => {
             await supabase.auth.signOut()
             setUser(undefined)

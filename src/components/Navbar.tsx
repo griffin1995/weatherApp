@@ -17,12 +17,14 @@ const Navbar = () => {
 
 
     const handleSearch = () => {
+        // reject empty searches
         if (search.trim() == "" || search == null || search.trim().length == 0) {
             toast({
                 title: "Enter a valid location!"
             })
             return
         }
+        // the pages at the root + /name lead to info about the named location
         router.push("/" + search.trim())
 
     }

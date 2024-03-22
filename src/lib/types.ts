@@ -1,3 +1,6 @@
+// All the interfcaes below represent the parts which make us the JSON response 
+// from the weather api
+
 interface Coord {
     lon: number;
     lat: number;

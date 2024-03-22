@@ -6,6 +6,7 @@ import React from 'react'
 
 const JourneyHistory = async () => {
 
+  // server side component so i can directly retrieve from the DB
   const client = createClient()
   const user = await client.auth.getUser()
   const journeys = await client.from("journeys").select()
@@ -13,7 +14,7 @@ const JourneyHistory = async () => {
   if (!user.data.user) {
     return <h1 className='mt-10 text-center text-3xl'>You must be signed in!</h1>
   }
-
+  
   if (journeys.data?.length == 0 || !journeys.data) {
     return <h1 className='mt-10 text-center text-3xl'>No Journeys</h1>
   }

@@ -1,6 +1,8 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// used to manage cookies when sending requests server side and back.
+// (from the supabase documentation)
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({
     request: {
