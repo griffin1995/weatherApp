@@ -141,7 +141,7 @@ if (isLoaded && destination) {
   
     // Fetch current location weather data
     if (isLoaded && currentLocation) {
-      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${currentLocation.lat()}&lon=${currentLocation.lng()}&appid=apiKey`)
+      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${currentLocation.lat()}&lon=${currentLocation.lng()}&appid=${apiKey}`)
         .then((response) => response.json())
         .then((data) => setWeatherData(data));
         
